@@ -1,6 +1,6 @@
 let rowData = document.getElementById("rowData");
 let searchContainer = document.getElementById("searchContainer")
-
+let loading = document.getElementById("loading")
 // start sideBar
 
 
@@ -40,24 +40,6 @@ $(".iconCo").click(function (e) {
   clickCount++;
 });
 
-// function displayMeals(meal) {
-//   let temp = "";
-
-//   for (let i = 0; i < meal.length; i++) {
-//       temp += `
-//       <div class="col-md-3">
-//               <div onclick="getMealDetails('${meal[i].idMeal}')" class="meal position-relative overflow-hidden rounded-2 cursor-pointer">
-//                   <img class="w-100" src="${meal[i].strMealThumb}" alt="" srcset="">
-//                   <div class="meal-layer position-absolute d-flex align-items-center text-black p-2">
-//                       <h3>${meal[i].strMeal}</h3>
-//                   </div>
-//               </div>
-//       </div>
-//       `
-//   }
-
-//   rowData.innerHTML = temp
-// }
 
 
 
@@ -69,14 +51,20 @@ $(".iconCo").click(function (e) {
 $("#cat").click(function (e) { 
   getCategory();
   
+    
+  
 });
  async function  getCategory(){
+  rowData.innerHTML = ""
+ $("#loading").removeClass("d-none")
+  
  
   let response =await fetch ("https://www.themealdb.com/api/json/v1/1/categories.php")
    let myRec = await response.json()
   console.log(myRec.categories);
  displayCategory(myRec.categories)
-  
+
+  $("#loading").addClass("d-none")
 }
 
 
@@ -112,16 +100,19 @@ function displayCategory(data) {
 }
  
 }
-// getMeals()
-// displayMealCat()
+getMeals()
+displayMealCat()
 
 async function getMeals(mealName = "beef") {
+  rowData.innerHTML=""
+  $("#loading").removeClass("d-none")
   let response = await fetch(
     `https://www.themealdb.com/api/json/v1/1/filter.php?c=${mealName}`
   );
   let myRes = await response.json();
   // console.log(myRes.meals);
   displayMealCat(myRes.meals);
+  $("#loading").addClass("d-none")
 }
 
 function displayMealCat(meal) {
@@ -152,12 +143,15 @@ function displayMealCat(meal) {
 
 
 async function getDetails(id = "52772") {
+  rowData.innerHTML=""
+  $("#loading").removeClass("d-none")
 let response = await fetch(
   `https://www.themealdb.com/api/json/v1/1/lookup.php?i=${id}`
 );
 let myRes = await response.json();
 // console.log(myRes.meals);
 displayById(myRes.meals);
+$("#loading").addClass("d-none")
 }
 // getDetails(52772)
 function displayById(meal) {
@@ -218,12 +212,15 @@ rowData.innerHTML = temp;
 
 
 async function getArea() {
+  rowData.innerHTML=""
+  $("#loading").removeClass("d-none")
 let response = await fetch(
   `https://www.themealdb.com/api/json/v1/1/list.php?a=list`
 );
 let myRes = await response.json();
 console.log(myRes.meals);
 displayArea(myRes.meals);
+$("#loading").addClass("d-none")
 }
 function displayArea(data) {
 let temp = "";
@@ -250,12 +247,15 @@ getArea();
 });
 
 async function getAreaMeals(area = "Egyptian") {
+  rowData.innerHTML =""
+  $("#loading").removeClass("d-none")
 let response = await fetch(
   `https://www.themealdb.com/api/json/v1/1/filter.php?a=${area}`
 );
 response = await response.json();
 
 showAreaMeals(response.meals);
+$("#loading").addClass("d-none")
 // console.log(response.meals.slice(0, 20));
 }
 
@@ -291,6 +291,8 @@ $("#int").click(function (e) {
   getIngredients();
 });
 async function getIngredients() {
+  rowData.innerHTML=""
+  $("#loading").removeClass("d-none")
   let response = await fetch(
     `https://www.themealdb.com/api/json/v1/1/list.php?i=list`
   );
@@ -298,6 +300,7 @@ async function getIngredients() {
 
   // console.log(myReq.meals[0].strIngredient);
   showIngredients(myReq.meals.slice(0, 20));
+  $("#loading").addClass("d-none")
 }
 
 function showIngredients(data) {
@@ -328,12 +331,15 @@ function showIngredients(data) {
 // !======================
 
 async function getIngredientsMeals(ingredients = "beef") {
+  rowData.innerHTML=""
+  $("#loading").removeClass("d-none")
   let response = await fetch(
     `https://www.themealdb.com/api/json/v1/1/filter.php?i=${ingredients}`
   );
   let myReq = await response.json();
 
   displayIngredientsMeals(myReq.meals);
+  $("#loading").addClass("d-none")
   // console.log(myReq.meals[i].idMeal);
   // showIngredients(myReq.meals.slice(0,20))
 }
@@ -366,12 +372,15 @@ function displayIngredientsMeals(meal) {
 // getIngredientsMeals()
 
 async function getDetailsingre(id = "52772") {
+  rowData.innerHTML=""
+  $("#loading").removeClass("d-none")
   let response = await fetch(
     `https://www.themealdb.com/api/json/v1/1/lookup.php?i=${id}`
   );
   let myRes = await response.json();
   // console.log(myRes.meals);
   displayByIdingre(myRes.meals);
+  $("#loading").addClass("d-none")
 }
 // getDetails(52772)
 function displayByIdingre(meal) {
@@ -454,19 +463,22 @@ function showSearchInputs() {
 
 async function searchByName(name) {
   rowData.innerHTML=""
-  
+  $("#loading").removeClass("d-none")
   let response =await fetch(`https://www.themealdb.com/api/json/v1/1/search.php?s=${name}`)
   let mySer = await response.json()
   console.log(mySer)
   mySer.meals ? displayMealCat(mySer.meals) : displayMealCat([])
+  $("#loading").addClass("d-none")
 }
 async function searchByletter(term) {
   rowData.innerHTML = ""
+  $("#loading").removeClass("d-none")
   term == "" ? term = "b" : "";
   let response = await fetch(`https://www.themealdb.com/api/json/v1/1/search.php?f=${term}`)
   response = await response.json()
 
   response.meals ? displayMealCat(response.meals) : displayMealCat([])
+  $("#loading").addClass("d-none")
  
 
 }
